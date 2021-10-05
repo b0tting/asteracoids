@@ -3,7 +3,6 @@ import sys
 import pygame
 
 from lib.asteracoidsgame import AsteracoidsGame
-from lib.gameconfig import GameConfig
 
 
 # Game setup class handles all meta stuff like the canvas etc
