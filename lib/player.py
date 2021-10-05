@@ -7,6 +7,9 @@ class Player(Mobile):
     def __init__(self, gameconfig):
         self.scale = gameconfig.player_image_scale
         self.imagename = "resources/player.png"
+        self.burning = False
+        self.default_image = pygame.image.load(self.imagename).convert_alpha()
+        self.engine_image = pygame.image.load("resources/player_flaming.png").convert_alpha()
         super().__init__(gameconfig)
 
     def get_starting_pos(self):
@@ -18,8 +21,21 @@ class Player(Mobile):
             self.rotate_left(self.gameconfig.player_rotate_speed)
         elif keys[pygame.K_LEFT]:
             self.rotate_right(self.gameconfig.player_rotate_speed)
+
         if keys[pygame.K_UP]:
             self.add_speed(self.gameconfig.player_speed)
+            self.toggle_burn_details(True)
+        elif self.burning:
+            self.toggle_burn_details(False)
+
+    def toggle_burn_details(self, set_on=False):
+        if set_on:
+            if not self.burning:
+                self.burning = True
+                self.image = pygame.transform.smoothscale(self.engine_image, (self.scale, self.scale))
+        elif self.burning:
+            self.image = pygame.transform.smoothscale(self.default_image, (self.scale, self.scale))
+            self.burning = False
 
     def add_speed(self, speed):
         self.speed += speed
