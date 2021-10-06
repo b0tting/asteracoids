@@ -1,16 +1,19 @@
 import pygame
 
+from lib.missile import Missile
 from lib.mobile import Mobile
 
 # Ready player one!
 class Player(Mobile):
-    def __init__(self, gameconfig):
+    def __init__(self, gameconfig, missiles):
+        self.missiles = missiles
         self.scale = gameconfig.player_image_scale
         self.imagename = "resources/player.png"
         self.burning = False
         self.default_image = pygame.image.load(self.imagename).convert_alpha()
         self.engine_image = pygame.image.load("resources/player_flaming.png").convert_alpha()
         self.dead = False
+        self.last_fire_time = 0
         super().__init__(gameconfig)
 
     def get_starting_pos(self):
@@ -22,6 +25,11 @@ class Player(Mobile):
             self.rotate_left(self.gameconfig.player_rotate_speed)
         elif keys[pygame.K_LEFT]:
             self.rotate_right(self.gameconfig.player_rotate_speed)
+
+        if keys[pygame.K_SPACE]:
+            if self.last_fire_time + self.gameconfig.player_shot_delay < pygame.time.get_ticks():
+                self.last_fire_time = pygame.time.get_ticks()
+                self.missiles.add(Missile(self.gameconfig, self.angle, (self.rect.x, self.rect.y)))
 
         if keys[pygame.K_UP]:
             self.add_speed(self.gameconfig.player_speed)

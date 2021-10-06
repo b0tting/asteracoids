@@ -64,3 +64,6 @@ class Mobile(pygame.sprite.Sprite):
         self.speed = self.speed - self.gameconfig.momentum_loss
         if self.speed < 0:
             self.speed = 0
+
+    def update(self):
+        self.set_new_position()
