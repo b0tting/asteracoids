@@ -1,7 +1,7 @@
 # Asteracoids
 The classic asteroids game in pygame. The goal of this project is to showcase pygame and class hierarchy in a game. 
 
-It might look like a simple game, but Asteroids has some mechanics that I found complicated. Things to consider before diving into this code: 
+It might look like a simple game, but Asteroids has some mechanics that I found quite complicated. Some things to consider before diving into this code: 
 - Objects wrap around the screen. If you exit left, you should appear on the right side.
 - Objects move in angles, so you'll need to work with vectors (ie. angle and speed), which is harder then doing just x,y speeds. Trigonometry is actually a useful class. 
 - The player ship rotates and rotation in pygame is a two part problem - you have to rotate both the image and the actual object.
