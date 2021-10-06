@@ -9,7 +9,8 @@ class AsteracoidsGame:
         self.restart()
 
     def restart(self):
-        player_sprite = Player(self.gameconfig)
+        self.missiles = pygame.sprite.Group()
+        player_sprite = Player(self.gameconfig, self.missiles)
         self.player = pygame.sprite.GroupSingle(player_sprite)
         self.asteroids = pygame.sprite.Group()
         for numb in range(self.gameconfig.asteroids_level_1):
@@ -17,27 +18,50 @@ class AsteracoidsGame:
 
     def updates(self):
         self.asteroids.update()
+        self.missiles.update()
         self.player.update()
         self.check_collisions()
 
     def draws(self, screen):
         self.asteroids.draw(screen)
+        self.missiles.draw(screen)
         self.player.sprite.draw_extended(screen)
 
+    def check_collision(self, left, right, use_accurate=True):
+        if use_accurate:
+            return pygame.sprite.collide_mask(left, right)
+        else:
+            return pygame.sprite.collide_rect(left.rect, right.rect)
 
     def check_collisions(self):
         dead = False
 
-
+        # Collision detection is done asteroid first. This is currently done using the
+        # "collide_mask" method. That might be expensive, so there is a switch to allow fallback
+        # to the less accurate rect collision detection
+        use_accurate = self.gameconfig.detailed_collisions
         for asteroid in self.asteroids.sprites():
-            if pygame.sprite.collide_mask(asteroid, self.player.sprite):
+
+            # First, check collisions with the player
+            if self.check_collision(asteroid, self.player.sprite, use_accurate):
                 dead = True
                 break
+
+            # Next, check for missile hits
+            for missile in self.missiles.sprites():
+                if self.check_collision(asteroid, missile, use_accurate):
+                    asteroid.kill()
+                    missile.kill()
+                    if not self.asteroids.sprites():
+                        self.restart()
+                    else:
+                        pass
+
+            # Next check if another asteroid hit us
             for asteroid_boink in self.asteroids.sprites():
                 if asteroid_boink is not asteroid:
-                    if pygame.sprite.collide_mask(asteroid, asteroid_boink):
-                        # Faking a correct bounce by rotating our asteroid an extra 90 degrees
-                        asteroid.angle = (asteroid.angle + 90) % 360
+                    if self.check_collision(asteroid, asteroid_boink, use_accurate):
+                        asteroid.bounce()
 
         if dead:
             self.restart()

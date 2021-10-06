@@ -37,6 +37,10 @@ class Asteroid(Mobile):
         else:
             return random.randint(0, 360)
 
+    # Faking a correct bounce by rotating our asteroid an extra 90 degrees
+    def bounce(self):
+        self.angle = (self.angle + 90) % 360
+
     def get_starting_pos(self):
         # We need to get a location away from the player pos
         start_point = self.player_rect.center
@@ -63,6 +67,3 @@ class Asteroid(Mobile):
         # Use the modulo operator to prevent being thrown out of the screen
         pos = pos[0] % self.gameconfig.screen_width, pos[1] % self.gameconfig.screen_width
         return pos
-
-    def update(self):
-        self.set_new_position()
