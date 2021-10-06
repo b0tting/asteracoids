@@ -21,19 +21,27 @@ class Mobile(pygame.sprite.Sprite):
             move_vec.from_polar((self.speed, self.angle))
             new_x = pos[0] + move_vec[0]
             new_y = pos[1] - move_vec[1]
-            self.rect.center = self.get_boundary_correct_pos(new_x, new_y)
+            new_pos = self.get_boundary_correct_pos(new_x, new_y)
+            new_pos = self.fix_boring_angles(pos, new_pos)
+            self.rect.center = new_pos
+
+    # Does nothing here, but allows for correction in subclasses
+    def fix_boring_angles(self, old_pos, new_pos):
+        return new_pos
 
     # This function takes your x and y and wraps those around the screen if required.
     # I leave a ghost area of half the size of your ship outside of the game bounds
     def get_boundary_correct_pos(self, x, y):
-        if x > (self.gameconfig.screen_width + self.rect.width / 2):
-            x = 0
-        elif x < 0:
-            x = self.gameconfig.screen_width
-        if y > (self.gameconfig.screen_height + self.rect.height / 2):
-            y = 0
-        elif y < 0:
-            y = self.gameconfig.screen_height
+        half_height = self.rect.height
+        half_width = self.rect.width
+        if x > (self.gameconfig.screen_width + half_width):
+            x = 0 - half_width
+        elif x + half_width < 0:
+            x = self.gameconfig.screen_width + half_width
+        if y > (self.gameconfig.screen_height + half_height):
+            y = 0 - half_height
+        elif y + half_height < 0:
+            y = self.gameconfig.screen_height + half_height
         return round(x), round(y)
 
     def get_starting_pos(self):

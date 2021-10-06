@@ -20,8 +20,18 @@ class Asteroid(Mobile):
         self.speed = random.uniform(gameconfig.asteroid_min_speed,
                                     gameconfig.asteroid_max_speed)
 
+    # Does nothing here, but allows for correction in subclasses
+    def fix_boring_angles(self, old_pos, new_pos):
+        x = new_pos[0]
+        if old_pos[0] == x:
+            x += 1
+        y = new_pos[1]
+        if old_pos[1] == y:
+            y -= 1
+        return x, y
+
     def get_random_angle(self, no_boring=False):
-        # We need to prevent boring angles like 0, 90, etc. @todo it's not working
+        # We need to prevent boring angles like 0, 90, etc.
         if no_boring:
             return random.choice(Asteroid.random_angles)
         else:

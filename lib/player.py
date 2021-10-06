@@ -10,6 +10,7 @@ class Player(Mobile):
         self.burning = False
         self.default_image = pygame.image.load(self.imagename).convert_alpha()
         self.engine_image = pygame.image.load("resources/player_flaming.png").convert_alpha()
+        self.dead = False
         super().__init__(gameconfig)
 
     def get_starting_pos(self):
