@@ -50,5 +50,18 @@ class GameConfig:
 
     # Asteroids spawning in level 1
     asteroids_level_1: int = 4
-    screen_width: int = 600
-    screen_height: int = 600
+
+    # Default number of layers in an asteroid
+    asteroid_default_layers: int = 2
+
+    # Asteroid debris max speedup
+    asteroid_debris_speedup: int = 1
+
+    # Minimum number of pieces that spawn when an asteroid gets hit
+    asteroid_min_pieces: int = 2
+
+    # Maximum number of pieces that spawn when an asteroid gets hit
+    asteroid_max_pieces: int = 5
+
+    screen_width: int = 1000
+    screen_height: int = 1000

@@ -13,8 +13,12 @@ class AsteracoidsGame:
         player_sprite = Player(self.gameconfig, self.missiles)
         self.player = pygame.sprite.GroupSingle(player_sprite)
         self.asteroids = pygame.sprite.Group()
-        for numb in range(self.gameconfig.asteroids_level_1):
-            self.asteroids.add(Asteroid(self.gameconfig, self.player.sprite.rect))
+        for number in range(self.gameconfig.asteroids_level_1):
+            Asteroid(self.asteroids,
+                     self.gameconfig,
+                     self.player.sprite.rect,
+                     self.gameconfig.asteroid_default_layers
+                    )
 
     def updates(self):
         self.asteroids.update()
@@ -31,7 +35,7 @@ class AsteracoidsGame:
         if use_accurate:
             return pygame.sprite.collide_mask(left, right)
         else:
-            return pygame.sprite.collide_rect(left.rect, right.rect)
+            return pygame.sprite.collide_rect(left, right)
 
     def check_collisions(self):
         dead = False
@@ -50,19 +54,19 @@ class AsteracoidsGame:
             # Next, check for missile hits
             for missile in self.missiles.sprites():
                 if self.check_collision(asteroid, missile, use_accurate):
-                    asteroid.kill()
+                    asteroid.handle_hit()
                     missile.kill()
-                    if not self.asteroids.sprites():
-                        self.restart()
-                    else:
-                        pass
 
             # Next check if another asteroid hit us
             for asteroid_boink in self.asteroids.sprites():
                 if asteroid_boink is not asteroid:
-                    if self.check_collision(asteroid, asteroid_boink, use_accurate):
-                        asteroid.bounce()
+                    if self.check_collision(asteroid, asteroid_boink, False):
+                        asteroid.bounce(asteroid_boink)
 
         if dead:
             self.restart()
+
+        if not self.asteroids.sprites():
+            self.restart()
+
 
