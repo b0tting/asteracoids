@@ -30,10 +30,10 @@ class Asteroid(Mobile):
         self.last_boink = None
         self.asteroids.add(self)
 
-    # An inaccurate way to prevent asteroid overlap
+    # An inaccurate way to prevent asteroid overlap on spawn
     def move_if_overlapping(self):
         while pygame.sprite.spritecollideany(self, self.asteroids):
-            self.rect.center = self.move(self.rect.height, self.get_random_angle())
+            self.move_to(self.get_move_coordinates(self.rect.height, self.get_random_angle()))
 
     # Does nothing here, but allows for correction in subclasses
     def fix_boring_angles(self, old_pos, new_pos):
@@ -48,15 +48,15 @@ class Asteroid(Mobile):
     def get_random_angle(self):
         return random.randint(0, 3600) / 10
 
-    # Faking a correct bounce by rotating our asteroid an extra 90 degrees
     def bounce(self, asteroid_boink):
-        self.angle = (asteroid_boink.angle + 90) % 360
+        # IF asteroids boink I give them once chance to turn around. After that, I ignore
+        # the bump so that the asteroids have time to drift apart again.
         if self.last_boink == asteroid_boink:
-            #            asteroid_boink.move()
-            asteroid_boink.angle = (asteroid_boink.angle - 180) % 360
+            pass
         else:
-            asteroid_boink.angle = (asteroid_boink.angle - 90) % 360
-        self.last_boink = asteroid_boink
+            self.last_boink = asteroid_boink
+            self.angle = (self.angle + 90) % 360
+            asteroid_boink.angle = (self.angle + 180) % 360
 
     def handle_hit(self):
         new_asteroids = []
@@ -97,7 +97,7 @@ class Asteroid(Mobile):
                                       max_distance - self.gameconfig.asteroid_spawn_distance)
 
             # Calculate the point that far away from the player at the chosen angle
-            pos = self.move(distance, angle, start_point)
+            pos = self.get_move_coordinates(distance, angle, start_point)
 
             # Use the modulo operator to prevent being thrown out of the screen
             pos = pos[0] % self.gameconfig.screen_width, pos[1] % self.gameconfig.screen_width
