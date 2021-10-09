@@ -17,10 +17,7 @@ class Mobile(pygame.sprite.Sprite):
         if self.speed > 0:
             pos = self.rect.center
             # https://stackoverflow.com/questions/46697502/how-to-move-a-sprite-according-to-an-angle-in-pygame
-            move_vec = pygame.math.Vector2()
-            move_vec.from_polar((self.speed, self.angle))
-            new_x = pos[0] + move_vec[0]
-            new_y = pos[1] - move_vec[1]
+            new_x, new_y = self.move(self.speed, self.angle)
             new_pos = self.get_boundary_correct_pos(new_x, new_y)
             new_pos = self.fix_boring_angles(pos, new_pos)
             self.rect.center = new_pos
@@ -28,6 +25,15 @@ class Mobile(pygame.sprite.Sprite):
     # Does nothing here, but allows for correction in subclasses
     def fix_boring_angles(self, old_pos, new_pos):
         return new_pos
+
+    def move(self, length, angle, pos=None):
+        if not pos:
+            pos = self.rect.center
+        move_vec = pygame.math.Vector2()
+        move_vec.from_polar((length, angle))
+        new_x = pos[0] + move_vec[0]
+        new_y = pos[1] - move_vec[1]
+        return new_x, new_y
 
     # This function takes your x and y and wraps those around the screen if required.
     # I leave a ghost area of half the size of your ship outside of the game bounds

@@ -27,15 +27,13 @@ class Asteroid(Mobile):
         else:
             self.speed = speed
         self.move_if_overlapping()
+        self.last_boink = None
         self.asteroids.add(self)
 
     # An inaccurate way to prevent asteroid overlap
     def move_if_overlapping(self):
-        pos = pygame.math.Vector2()
         while pygame.sprite.spritecollideany(self, self.asteroids):
-            pos.from_polar((self.rect.height, self.get_random_angle()))
-            self.rect.x += pos[0]
-            self.rect.y -= pos[1]
+            self.rect.center = self.move(self.rect.height, self.get_random_angle())
 
     # Does nothing here, but allows for correction in subclasses
     def fix_boring_angles(self, old_pos, new_pos):
@@ -53,7 +51,12 @@ class Asteroid(Mobile):
     # Faking a correct bounce by rotating our asteroid an extra 90 degrees
     def bounce(self, asteroid_boink):
         self.angle = (asteroid_boink.angle + 90) % 360
-        asteroid_boink.angle = (asteroid_boink.angle + -90) % 360
+        if self.last_boink == asteroid_boink:
+            #            asteroid_boink.move()
+            asteroid_boink.angle = (asteroid_boink.angle - 180) % 360
+        else:
+            asteroid_boink.angle = (asteroid_boink.angle - 90) % 360
+        self.last_boink = asteroid_boink
 
     def handle_hit(self):
         new_asteroids = []
@@ -66,15 +69,14 @@ class Asteroid(Mobile):
             for num in range(num_pieces):
                 speedup = self.speed + random.randint(0, self.gameconfig.asteroid_debris_speedup)
                 scale = random.randint(self.scale // 3, self.scale // 2)
-                new_asteroid = Asteroid(self.asteroids,
-                                        self.gameconfig,
-                                        start_pos,
-                                        self.asteroid_depth - 1,
-                                        speed=speedup,
-                                        scale=scale,
-                                        evade_start_pos=False)
+                Asteroid(self.asteroids,
+                         self.gameconfig,
+                         start_pos,
+                         self.asteroid_depth - 1,
+                         speed=speedup,
+                         scale=scale,
+                         evade_start_pos=False)
         return new_asteroids
-
 
     def get_starting_pos(self):
         angle = self.get_random_angle()
@@ -82,8 +84,6 @@ class Asteroid(Mobile):
         if self.evade_start_pos:
             # We need to get a location away from the player pos
             start_point = self.start_pos.center
-
-            # Take a random angle point that way. Set this as the direction for our asteroid
 
             # This code is not entirely correct if we are not in an exact square screen,
             # but we need to find a nice distance away from the player and not go to far or we'll wrap
@@ -97,9 +97,7 @@ class Asteroid(Mobile):
                                       max_distance - self.gameconfig.asteroid_spawn_distance)
 
             # Calculate the point that far away from the player at the chosen angle
-            pos = pygame.math.Vector2()
-            pos.from_polar((distance, angle))
-            pos = start_point + pos
+            pos = self.move(distance, angle, start_point)
 
             # Use the modulo operator to prevent being thrown out of the screen
             pos = pos[0] % self.gameconfig.screen_width, pos[1] % self.gameconfig.screen_width
