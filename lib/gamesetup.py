@@ -13,8 +13,10 @@ class GameSetup:
         self.screen = pygame.display.set_mode((gc.screen_width, gc.screen_height))
         self.clock = pygame.time.Clock()
 
+
     def run(self):
         pygame.init()
+        pygame.display.set_caption(self.gameconfig.game_title)
         self.game = AsteracoidsGame(self.gameconfig)
         while True:
             self.loop()

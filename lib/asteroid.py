@@ -104,3 +104,11 @@ class Asteroid(Mobile):
         else:
             pos = self.start_pos
         return pos
+
+    def get_score(self):
+        points = self.gameconfig.score_asteroid_base
+        points += round(self.gameconfig.score_asteroid_speedmult * self.speed)
+        points += round(self.gameconfig.score_asteroid_scalemult * self.scale)
+        return points
+
+

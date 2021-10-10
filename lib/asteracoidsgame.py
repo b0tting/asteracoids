@@ -2,6 +2,9 @@ import pygame
 
 from lib.asteroid import Asteroid
 from lib.player import Player
+from lib.scorer import Scorer
+
+
 
 class AsteracoidsGame:
     def __init__(self, gameconfig):
@@ -9,6 +12,7 @@ class AsteracoidsGame:
         self.restart()
 
     def restart(self):
+        self.score = pygame.sprite.GroupSingle(Scorer(self.gameconfig))
         self.missiles = pygame.sprite.Group()
         player_sprite = Player(self.gameconfig, self.missiles)
         self.player = pygame.sprite.GroupSingle(player_sprite)
@@ -21,12 +25,14 @@ class AsteracoidsGame:
                     )
 
     def updates(self):
+        self.score.update()
         self.asteroids.update()
         self.missiles.update()
         self.player.update()
         self.check_collisions()
 
     def draws(self, screen):
+        self.score.sprite.draw(screen)
         self.asteroids.draw(screen)
         self.missiles.draw(screen)
         self.player.sprite.draw_extended(screen)
@@ -54,6 +60,7 @@ class AsteracoidsGame:
             # Next, check for missile hits
             for missile in self.missiles.sprites():
                 if self.check_collision(asteroid, missile, use_accurate):
+                    self.score.sprite.add_points(asteroid.get_score())
                     asteroid.handle_hit()
                     missile.kill()
 

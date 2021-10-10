@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 @dataclass
 class GameConfig:
+    game_title: str = "Asteracoids!"
     # Use detailed collision detection. Works fine on my overpowered desktop but
     # might not work on potato computers.
     detailed_collisions: bool = True
@@ -47,6 +48,18 @@ class GameConfig:
 
     # Asteroid minimum spawn distance from player
     asteroid_spawn_distance: int = 50
+
+    # Font size for the score
+    score_font_size: int = 64
+
+    # Every asteroid has a base score with some multipliers
+    score_asteroid_base: int = 100
+
+    # Speed multi, this adds speed * speedmult to the score
+    score_asteroid_speedmult: float = 3
+
+    # Scale multi, this adds scale (size) to the score
+    score_asteroid_scalemult: float = 1
 
     # Asteroids spawning in level 1
     asteroids_level_1: int = 4
