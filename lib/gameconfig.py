@@ -34,18 +34,6 @@ class GameConfig:
     # Missile lifetime in MS
     missile_life: int = 2000
 
-    # Asteroid minimal speed at zero level
-    asteroid_min_speed: float = 0.6
-
-    # Asteroid max speed at zero level
-    asteroid_max_speed: float = 1.5
-
-    # Asteroid minimal speed at zero level
-    asteroid_min_scale: float = 100
-
-    # Asteroid max speed at zero level
-    asteroid_max_scale: float = 120
-
     # Asteroid minimum spawn distance from player
     asteroid_spawn_distance: int = 50
 
@@ -61,20 +49,6 @@ class GameConfig:
     # Scale multi, this adds scale (size) to the score
     score_asteroid_scalemult: float = 1
 
-    # Asteroids spawning in level 1
-    asteroids_level_1: int = 4
-
-    # Default number of layers in an asteroid
-    asteroid_default_layers: int = 2
-
-    # Asteroid debris max speedup
-    asteroid_debris_speedup: int = 1
-
-    # Minimum number of pieces that spawn when an asteroid gets hit
-    asteroid_min_pieces: int = 2
-
-    # Maximum number of pieces that spawn when an asteroid gets hit
-    asteroid_max_pieces: int = 5
 
     screen_width: int = 1000
     screen_height: int = 1000

@@ -1,6 +1,7 @@
 import pygame
 
 from lib.asteroid import Asteroid
+from lib.levels import Levels
 from lib.player import Player
 from lib.scorer import Scorer
 
@@ -9,19 +10,27 @@ from lib.scorer import Scorer
 class AsteracoidsGame:
     def __init__(self, gameconfig):
         self.gameconfig = gameconfig
+        self.levels = Levels()
+        self.score = pygame.sprite.GroupSingle(Scorer(self.gameconfig))
         self.restart()
 
     def restart(self):
-        self.score = pygame.sprite.GroupSingle(Scorer(self.gameconfig))
+        self.levels.restart_levels()
+        self.score.sprite.restart_scorer()
+        self.next_level()
+
+    def next_level(self):
+        level = self.levels.get_next_level()
         self.missiles = pygame.sprite.Group()
         player_sprite = Player(self.gameconfig, self.missiles)
         self.player = pygame.sprite.GroupSingle(player_sprite)
         self.asteroids = pygame.sprite.Group()
-        for number in range(self.gameconfig.asteroids_level_1):
+        for number in range(level.asteroids_spawning):
             Asteroid(self.asteroids,
+                     level,
                      self.gameconfig,
                      self.player.sprite.rect,
-                     self.gameconfig.asteroid_default_layers
+                     level.asteroid_default_layers
                     )
 
     def updates(self):
@@ -51,7 +60,6 @@ class AsteracoidsGame:
         # to the less accurate rect collision detection
         use_accurate = self.gameconfig.detailed_collisions
         for asteroid in self.asteroids.sprites():
-
             # First, check collisions with the player
             if self.check_collision(asteroid, self.player.sprite, use_accurate):
                 dead = True
@@ -72,8 +80,7 @@ class AsteracoidsGame:
 
         if dead:
             self.restart()
-
-        if not self.asteroids.sprites():
-            self.restart()
+        elif not self.asteroids.sprites():
+            self.next_level()
 
 

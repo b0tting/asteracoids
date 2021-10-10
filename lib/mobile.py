@@ -41,15 +41,15 @@ class Mobile(pygame.sprite.Sprite):
     # This function takes your x and y and wraps those around the screen if required.
     # I leave a ghost area of half the size of your ship outside of the game bounds
     def get_boundary_correct_pos(self, x, y):
-        half_height = self.rect.height
-        half_width = self.rect.width
-        if x > (self.gameconfig.screen_width + half_width):
+        half_height = self.rect.height / 2
+        half_width = self.rect.width / 2
+        if x > (self.gameconfig.screen_width + self.rect.width):
             x = 0 - half_width
-        elif x + half_width < 0:
+        elif x + self.rect.width < 0:
             x = self.gameconfig.screen_width + half_width
-        if y > (self.gameconfig.screen_height + half_height):
+        if y > (self.gameconfig.screen_height + self.rect.height):
             y = 0 - half_height
-        elif y + half_height < 0:
+        elif y + self.rect.height < 0:
             y = self.gameconfig.screen_height + half_height
         return round(x), round(y)
 

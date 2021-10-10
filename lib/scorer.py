@@ -30,6 +30,9 @@ class Scorer(pygame.sprite.Sprite):
     def add_points(self, points):
         self.score += points
 
+    def restart_scorer(self):
+        self.score = 0
+
     def render(self, text):
         text = str(text).zfill(5)
         self.rendered = self.font.render(str(text), True, (45, 49, 97))
