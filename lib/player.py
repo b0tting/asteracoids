@@ -1,5 +1,6 @@
 import pygame
 
+from lib.gameutils import GameUtils
 from lib.missile import Missile
 from lib.mobile import Mobile
 
@@ -17,9 +18,9 @@ class Player(Mobile):
         super().__init__(gameconfig)
 
     def get_starting_pos(self):
-        return self.gameconfig.screen_width / 2, self.gameconfig.screen_height / 2
+        return GameUtils.get_center_pos(self.gameconfig)
 
-    def get_input(self):
+    def handle_player_keys(self):
         keys = pygame.key.get_pressed()
         if keys[pygame.K_RIGHT]:
             self.rotate_left(self.gameconfig.player_rotate_speed)
@@ -53,7 +54,7 @@ class Player(Mobile):
 
     def update(self):
         self.change_momentum()
-        self.get_input()
+        self.handle_player_keys()
         self.set_new_position()
 
     # https://stackoverflow.com/questions/4183208/how-do-i-rotate-an-image-around-its-center-using-pygame
