@@ -15,16 +15,10 @@ class Mobile(pygame.sprite.Sprite):
 
     def set_new_position(self):
         if self.speed > 0:
-            pos = self.rect.center
             # https://stackoverflow.com/questions/46697502/how-to-move-a-sprite-according-to-an-angle-in-pygame
             new_x, new_y = self.get_move_coordinates(self.speed, self.angle)
             new_pos = self.get_boundary_correct_pos(new_x, new_y)
-            new_pos = self.fix_boring_angles(pos, new_pos)
             self.rect.center = new_pos
-
-    # Does nothing here, but allows for correction in subclasses
-    def fix_boring_angles(self, old_pos, new_pos):
-        return new_pos
 
     def get_move_coordinates(self, length, angle, pos=None):
         if not pos:
@@ -40,18 +34,18 @@ class Mobile(pygame.sprite.Sprite):
 
     # This function takes your x and y and wraps those around the screen if required.
     # I leave a ghost area of half the size of your ship outside of the game bounds
-    def get_boundary_correct_pos(self, x, y):
+    def get_boundary_correct_pos(self, pos_x, pos_y):
         half_height = self.rect.height / 2
         half_width = self.rect.width / 2
-        if x > (self.gameconfig.screen_width + self.rect.width):
-            x = 0 - half_width
-        elif x + self.rect.width < 0:
-            x = self.gameconfig.screen_width + half_width
-        if y > (self.gameconfig.screen_height + self.rect.height):
-            y = 0 - half_height
-        elif y + self.rect.height < 0:
-            y = self.gameconfig.screen_height + half_height
-        return round(x), round(y)
+        if pos_x > (self.gameconfig.screen_width + self.rect.width):
+            pos_x = 0 - half_width
+        elif pos_x + self.rect.width < 0:
+            pos_x = self.gameconfig.screen_width + half_width
+        if pos_y > (self.gameconfig.screen_height + self.rect.height):
+            pos_y = 0 - half_height
+        elif pos_y + self.rect.height < 0:
+            pos_y = self.gameconfig.screen_height + half_height
+        return round(pos_x), round(pos_y)
 
     def get_starting_pos(self):
         return 0, 0

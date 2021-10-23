@@ -33,6 +33,12 @@ class Asteroid(Mobile):
         self.last_boink = None
         self.asteroids.add(self)
 
+    def set_new_position(self):
+        old_pos = self.rect.center
+        super().set_new_position()
+        new_pos = self.rect.center
+        self.rect.center = self.fix_boring_angles(old_pos, new_pos)
+
     # An inaccurate way to prevent asteroid overlap on spawn
     def move_if_overlapping(self):
         while pygame.sprite.spritecollideany(self, self.asteroids):
@@ -40,15 +46,16 @@ class Asteroid(Mobile):
 
     # Does nothing here, but allows for correction in subclasses
     def fix_boring_angles(self, old_pos, new_pos):
-        x = new_pos[0]
-        if old_pos[0] == x:
-            x += 1
-        y = new_pos[1]
-        if old_pos[1] == y:
-            y -= 1
-        return x, y
+        new_x = new_pos[0]
+        if old_pos[0] == new_x:
+            new_x += 1
+        new_y = new_pos[1]
+        if old_pos[1] == new_y:
+            new_y -= 1
+        return new_x, new_y
 
-    def get_random_angle(self):
+    @staticmethod
+    def get_random_angle():
         return random.randint(0, 3600) / 10
 
     def bounce(self, asteroid_boink):
@@ -69,7 +76,7 @@ class Asteroid(Mobile):
             num_pieces = random.randint(self.level.asteroid_min_pieces,
                                         self.level.asteroid_max_pieces)
 
-            for num in range(num_pieces):
+            for _ in range(num_pieces):
                 speedup = self.speed + random.randint(0, self.level.asteroid_debris_speedup)
                 scale = random.randint(self.scale // 3, self.scale // 2)
                 Asteroid(self.asteroids,
@@ -91,9 +98,10 @@ class Asteroid(Mobile):
             # We need to get a location away from the player pos
             start_point = self.start_pos.center
 
-            # This code is not entirely correct if we are not in an exact square screen,
-            # but we need to find a nice distance away from the player and not go to far or we'll wrap
-            # around the screen and hit the player. We first need the smaller of width or height of the screen
+            # This code is not entirely correct if we are not in an exact
+            # square screen, but we need to find a nice distance away from the
+            # player and not go to far or we'll wrap around the screen and hit
+            # the player. We first need the smaller of width or height of the screen
             max_distance = self.gameconfig.screen_width if \
                 self.gameconfig.screen_width < self.gameconfig.screen_height \
                 else self.gameconfig.screen_height
@@ -106,7 +114,7 @@ class Asteroid(Mobile):
             pos = self.get_move_coordinates(distance, angle, start_point)
 
             # Use the modulo operator to prevent being thrown out of the screen
-            pos = pos[0] % self.gameconfig.screen_width, pos[1] % self.gameconfig .screen_width
+            pos = pos[0] % self.gameconfig.screen_width, pos[1] % self.gameconfig.screen_width
         else:
             pos = self.start_pos
         return pos
@@ -116,5 +124,3 @@ class Asteroid(Mobile):
         points += round(self.gameconfig.score_asteroid_speedmult * self.speed)
         points += round(self.gameconfig.score_asteroid_scalemult * self.scale)
         return points
-
-

@@ -1,8 +1,9 @@
 import pygame
 
 from lib.asteroid import Asteroid
+from lib.background import Background
 from lib.gameutils import GameUtils
-from lib.levels import Levels, LevelOne, LevelThree
+from lib.levels import Levels, LevelThree
 from lib.player import Player
 from lib.scorer import Scorer
 from lib.textrender import TextRender
@@ -31,7 +32,11 @@ class AsteracoidsState:
         self.gameconfig = gameconfig
         self.context = context
         self.creation_time = pygame.time.get_ticks()
+        background = Background(gameconfig)
+        self.background = pygame.sprite.GroupSingle(background)
 
+    def draws(self, screen):
+        self.background.draw(screen)
 
 class AsteracoidsStateRunning(AsteracoidsState):
     def start_state(self):
@@ -51,7 +56,7 @@ class AsteracoidsStateRunning(AsteracoidsState):
                      self.gameconfig,
                      self.player.sprite.rect,
                      level.asteroid_default_layers
-                    )
+                     )
 
     def check_collision(self, left, right, use_accurate=True):
         if use_accurate:
@@ -87,7 +92,7 @@ class AsteracoidsStateRunning(AsteracoidsState):
 
         if dead:
             self.context.set_state(AsteracoidsStateGameOver(self.gameconfig,
-                                                         self.context))
+                                                            self.context))
         elif not self.asteroids.sprites():
             self.next_level()
 
@@ -99,6 +104,7 @@ class AsteracoidsStateRunning(AsteracoidsState):
         self.check_collisions()
 
     def draws(self, screen):
+        super().draws(screen)
         self.score.sprite.draw(screen)
         self.asteroids.draw(screen)
         self.missiles.draw(screen)
@@ -120,32 +126,32 @@ class AsteracoidsStateTitle(AsteracoidsState):
                      self.gameconfig,
                      pygame.Rect((1, 1), (2, 2)),
                      1
-                    )
+                     )
 
-    def can_continue(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_SPACE]:
-            return self.creation_time + 2000 < pygame.time.get_ticks()
-        else:
-            return False
+    def is_go_time(self):
+        return self.creation_time + 2000 < pygame.time.get_ticks()
 
     def updates(self):
         self.asteroids.update()
-        if self.can_continue():
-            self.context.set_state(
-                AsteracoidsStateRunning(self.gameconfig, self.context))
+        keys = pygame.key.get_pressed()
+        if keys[pygame.K_SPACE]:
+            if self.is_go_time():
+                self.context.set_state(
+                    AsteracoidsStateRunning(self.gameconfig, self.context))
 
     def draws(self, screen):
+        super().draws(screen)
         self.asteroids.draw(screen)
         self.title.draw(screen)
-        self.start.sprite.draw(screen)
+        if self.is_go_time():
+            self.start.sprite.draw(screen)
 
 
 class AsteracoidsStateGameOver(AsteracoidsState):
     def start_state(self):
         center = GameUtils.get_center_pos(self.gameconfig)
         game_over = TextRender(self.gameconfig, "GAME OVER",
-                                 center)
+                               center)
         self.end = pygame.sprite.GroupSingle(game_over)
 
     def can_continue(self):
@@ -157,4 +163,5 @@ class AsteracoidsStateGameOver(AsteracoidsState):
                 AsteracoidsStateTitle(self.gameconfig, self.context))
 
     def draws(self, screen):
+        super().draws(screen)
         self.end.sprite.draw(screen)

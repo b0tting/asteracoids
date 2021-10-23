@@ -78,7 +78,3 @@ class LevelFour(BaseLevel):
     asteroids_spawning: int = 3
     asteroid_min_speed: float = 2
     asteroid_max_speed: float = 3
-
-
-
-
