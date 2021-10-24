@@ -58,7 +58,7 @@ class LevelOne(BaseLevel):
 @dataclass
 class LevelTwo(BaseLevel):
     asteroids_spawning: int = 1
-    asteroid_default_layers: int = 3
+    asteroid_default_layers: int = 2
     asteroid_min_scale: float = 250
     asteroid_max_scale: float = 300
     asteroid_min_pieces: int = 6

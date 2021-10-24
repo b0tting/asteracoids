@@ -11,7 +11,7 @@ class GameConfig:
     player_speed: float = 0.1
 
     # Max speed for the player ship per frame
-    player_max_speed: float = 10
+    player_max_speed: float = 20
 
     # Player turn speed
     player_rotate_speed: float = 20
@@ -20,7 +20,7 @@ class GameConfig:
     momentum_loss: float = 0.05
 
     # Player image scale factor
-    player_image_scale: int = 30
+    player_image_scale: int = 60
 
     # Player shot delay value, ie. how many ticks
     player_shot_delay: int = 1200
