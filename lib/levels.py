@@ -1,6 +1,10 @@
 from dataclasses import dataclass
+""" Level objects for customizing the asteroids when they spawn """
+
 
 class Levels:
+    """ Base levels manager, contains the level dataclasses and will keep track of
+    the last level requested """
     def __init__(self):
         self.levels = [LevelOne(), LevelTwo(), LevelThree(), LevelFour()]
         self.current = 0
@@ -18,6 +22,8 @@ class Levels:
 
 @dataclass
 class BaseLevel:
+    """ Default level, with sane values. Subclass and overwrite these values to set up
+    new levels """
     # Asteroid minimal speed at zero level
     asteroid_min_speed: float = 0.6
 
@@ -55,6 +61,7 @@ class LevelOne(BaseLevel):
     asteroid_min_scale: float = 200
     asteroid_max_scale: float = 220
 
+
 @dataclass
 class LevelTwo(BaseLevel):
     asteroids_spawning: int = 1
@@ -66,12 +73,14 @@ class LevelTwo(BaseLevel):
     asteroid_min_speed: float = 0.2
     asteroid_max_speed: float = 0.6
 
+
 @dataclass
 class LevelThree(BaseLevel):
     asteroids_spawning: int = 5
     asteroid_default_layers: int = 4
     asteroid_min_speed: float = 0.4
     asteroid_max_speed: float = 0.7
+
 
 @dataclass
 class LevelFour(BaseLevel):
