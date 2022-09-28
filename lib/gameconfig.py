@@ -20,7 +20,7 @@ class GameConfig:
     momentum_loss: float = 0.05
 
     # Player image scale factor
-    player_image_scale: int = 60
+    player_image_scale: int = 120
 
     # Player shot delay value, ie. how many ticks
     player_shot_delay: int = 1200

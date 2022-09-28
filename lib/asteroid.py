@@ -56,7 +56,8 @@ class Asteroid(Mobile):
 
     @staticmethod
     def get_random_angle():
-        return random.randint(0, 3600) / 10
+        angle = random.randint(0, 3600) // 10
+        return angle
 
     def bounce(self, asteroid_boink):
         # IF asteroids boink I give them once chance to turn around. After that, I ignore
