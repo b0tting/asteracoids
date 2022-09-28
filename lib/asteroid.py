@@ -9,7 +9,6 @@ class Asteroid(Mobile):
     def __init__(self, asteroids, level, game_config, start_pos, asteroid_depth,
                  speed=None, scale=None, evade_start_pos=True):
         self.asteroids = asteroids
-        self.color = (0,0,0)
         self.level = level
         self.gameconfig = game_config
         self.start_pos = start_pos
